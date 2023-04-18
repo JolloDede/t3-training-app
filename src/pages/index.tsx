@@ -7,6 +7,8 @@ import { api } from "~/utils/api";
 const Home: NextPage = () => {
   const user = useUser();
 
+  const { data } = api.example.getAll.useQuery();
+
   return (
     <>
       <Head>
@@ -16,7 +18,11 @@ const Home: NextPage = () => {
       </Head>
       <main className="">
         <div>{!user.isSignedIn && <SignInButton />}</div>
-        {/* <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" /> */}
+
+        <div>
+          <h1>Muscles</h1>
+          {data?.map(muscle => (<div key={muscle.id}>{muscle.name}</div>))}
+        </div>
       </main>
     </>
   );

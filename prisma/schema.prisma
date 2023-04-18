@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -11,19 +11,40 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// model Post {
-//   id        Int      @default(autoincrement()) @id
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   title     String   @db.VarChar(255)
-//   content   String?
-//   published Boolean  @default(false)
-//   author    User     @relation(fields: [authorId], references: [id])
-//   authorId  Int
-// }
+model Muscle {
+  id        String               @id @default(cuid())
+  name      String               @unique @db.VarChar(255)
+  exercises MusclesInExercises[]
+}
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Exercise {
+  id       String                @id @default(cuid())
+  name     String                @db.VarChar(255) @unique
+  muscles  MusclesInExercises[]
+  workouts ExercisesInWorkouts[]
+}
+
+model MusclesInExercises {
+  muscle     Muscle   @relation(fields: [muscleId], references: [id])
+  muscleId   String // relation scalar field (used in the `@relation` attribute above)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId String // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([muscleId, exerciseId])
+}
+
+model Workout {
+  id        String                @id @default(cuid())
+  name      String                @db.VarChar(255) @unique
+  userId    String
+  exercises ExercisesInWorkouts[]
+}
+
+model ExercisesInWorkouts {
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId String // relation scalar field (used in the `@relation` attribute above) @map("muscleId")
+  workout    Workout  @relation(fields: [workoutId], references: [id])
+  workoutId  String // relation scalar field (used in the `@relation` attribute above) @map("exerciseId")
+
+  @@id([workoutId, exerciseId])
 }
