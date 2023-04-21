@@ -13,12 +13,12 @@ interface Props {
 }
 
 function Navbar({ activePage }: Props) {
-    let tabsClassname = "bg-white text-blue-500 hover:text-blue-800 px-4 py-2 mr-2";
-    let activeTabClassname = " border-l border-t border-r rounded-t -mb-px";
-    let homeClassname = activePage == ActivePage.Home ? tabsClassname + activeTabClassname : tabsClassname;
-    let profileClassname = activePage == ActivePage.Profile ? tabsClassname + activeTabClassname : tabsClassname;
-    let AdminClassname = activePage == ActivePage.Admin ? tabsClassname + activeTabClassname : tabsClassname;
-    let socialClassname = activePage == ActivePage.Social ? tabsClassname + activeTabClassname : tabsClassname;
+    const tabsClassname = "bg-white text-blue-500 hover:text-blue-800 px-4 py-2 mr-2";
+    const activeTabClassname = " border-l border-t border-r rounded-t -mb-px";
+    const homeClassname = activePage == ActivePage.Home ? tabsClassname + activeTabClassname : tabsClassname;
+    const profileClassname = activePage == ActivePage.Profile ? tabsClassname + activeTabClassname : tabsClassname;
+    const AdminClassname = activePage == ActivePage.Admin ? tabsClassname + activeTabClassname : tabsClassname;
+    const socialClassname = activePage == ActivePage.Social ? tabsClassname + activeTabClassname : tabsClassname;
 
     return (
         <nav className='flex py-6'>

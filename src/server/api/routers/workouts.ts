@@ -4,6 +4,7 @@ import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 
 export const workoutsRouter = createTRPCRouter({
   getAll: privateProcedure.query(({ ctx }) => {
-    return ctx.prisma.workout.findMany();
+    console.log(ctx.currentUser)
+    return ctx.prisma.workout.findMany({ where: { userId: ctx.currentUser.id }});
   }),
 });
