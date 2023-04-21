@@ -1,13 +1,11 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { SignIn, SignInButton, useUser } from "@clerk/nextjs";
+import Navbar, { ActivePage } from "~/components/Navbar";
+import PageTitle from "~/components/PageTitle";
+import { WorkoutList } from "~/components/Workout";
 
-import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const user = useUser();
-
-  const { data } = api.example.getAll.useQuery();
 
   return (
     <>
@@ -17,11 +15,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="">
-        <div>{!user.isSignedIn && <SignInButton />}</div>
-
-        <div>
-          <h1>Muscles</h1>
-          {data?.map(muscle => (<div key={muscle.id}>{muscle.name}</div>))}
+        <Navbar activePage={ActivePage.Home} />
+        <div className="mx-auto w-4/5">
+          <PageTitle>Home</PageTitle>
+          <WorkoutList />
         </div>
       </main>
     </>

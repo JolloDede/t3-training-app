@@ -18,32 +18,42 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 import { prisma } from "~/server/db";
 
-type CreateContextOptions = Record<string, never>;
+// /**
+//  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
+//  * it from here.
+//  *
+//  * Examples of things you may need it for:
+//  * - testing, so we don't have to mock Next.js' req/res
+//  * - tRPC's `createSSGHelpers`, where we don't have req/res
+//  *
+//  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
+//  */
+// const createInnerTRPCContext = (_opts: CreateContextOptions) => {
+//   return {
+//     prisma,
+//   };
+// };
 
-/**
- * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
- * it from here.
- *
- * Examples of things you may need it for:
- * - testing, so we don't have to mock Next.js' req/res
- * - tRPC's `createSSGHelpers`, where we don't have req/res
- *
- * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
- */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
-  return {
-    prisma,
-  };
-};
+// /**
+//  * This is the actual context you will use in your router. It will be used to process every request
+//  * that goes through your tRPC endpoint.
+//  *
+//  * @see https://trpc.io/docs/context
+//  */
+// export const createTRPCContext = (_opts: CreateNextContextOptions) => {
+//   return createInnerTRPCContext({});
+// };
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
+  const { req } = opts;
+  
+  const {userId} = getAuth(req);
 
-/**
- * This is the actual context you will use in your router. It will be used to process every request
- * that goes through your tRPC endpoint.
- *
- * @see https://trpc.io/docs/context
- */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
+  const user = userId ? await clerkClient.users.getUser(userId) : null;
+
+    return {
+      prisma,
+      currentUser: user,
+    };
 };
 
 /**
@@ -53,9 +63,10 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { clerkClient, getAuth } from "@clerk/nextjs/server";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -93,3 +104,42 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
+// private procedure
+const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.currentUser) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
+
+  return next({
+    ctx: {
+      currentUser: ctx.currentUser,
+    },
+  });
+});
+
+export const privateProcedure = t.procedure.use(enforceUserIsAuthed);
+
+// Admin route
+const enforceUserIsAdmin = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.currentUser) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
+  if (!ctx.currentUser.publicMetadata) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
+
+  return next({
+    ctx: {
+      currentUser: ctx.currentUser,
+    }
+  })
+});
+
+export const adminProcedure = t.procedure.use(enforceUserIsAdmin);

@@ -31,6 +31,8 @@ model MusclesInExercises {
   exerciseId String // relation scalar field (used in the `@relation` attribute above)
 
   @@id([muscleId, exerciseId])
+  @@index([muscleId])
+  @@index([exerciseId])
 }
 
 model Workout {
@@ -47,4 +49,6 @@ model ExercisesInWorkouts {
   workoutId  String // relation scalar field (used in the `@relation` attribute above) @map("exerciseId")
 
   @@id([workoutId, exerciseId])
+  @@index([exerciseId])
+  @@index([workoutId])
 }
