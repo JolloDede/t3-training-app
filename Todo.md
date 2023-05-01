@@ -10,8 +10,8 @@
 ## Admin
 
 ### Muscles
-* [ ] delete
-* [ ] add
+* [X] delete
+* [X] add
 
 ### Exercises
 * [ ] delete

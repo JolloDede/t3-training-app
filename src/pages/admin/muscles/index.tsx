@@ -12,13 +12,25 @@ import { api } from "~/utils/api";
 function MusclePage() {
     const { data } = api.muscles.getAll.useQuery();
     const router = useRouter();
+    const ctx = api.useContext();
+
+    const { mutate } = api.muscles.delete.useMutation({
+        onSuccess: () => {
+            void ctx.muscles.getAll.invalidate();
+        },
+        onError: (e) => {
+            const errorMessage = e.data?.zodError?.fieldErrors.content;
+            if (errorMessage && errorMessage[0]) {
+                console.log(errorMessage[0]);
+            } else {
+                console.log("Failed to delete! Please try again later.");
+            }
+        },
+    })
 
     async function handleDelClick(e: MouseEvent, muscle: Muscle) {
         e.stopPropagation();
-        // const response = await muscleCtx?.removeMuscle(muscle);
-        // if (response) {
-        //     console.log(response);
-        // }
+        mutate({ id: muscle.id })
     }
 
     return (
@@ -38,9 +50,9 @@ function MusclePage() {
             {data?.map((muscle) => (
                 <Card key={muscle.id}>
                     <p className="flex select-none">{muscle.name}</p>
-                    {/* <div onClick={(e) => handleDelClick(e, muscle)} className="flex mr-0 ml-auto pt-1 cursor-pointer">
+                    <div onClick={(e) => handleDelClick(e, muscle)} className="flex mr-0 ml-auto pt-1 cursor-pointer">
                         <Bin />
-                    </div> */}
+                    </div>
                 </Card>
             ))}
         </div>
