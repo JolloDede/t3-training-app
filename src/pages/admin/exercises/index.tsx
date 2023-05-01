@@ -12,13 +12,25 @@ import { api } from "~/utils/api";
 function ExercisePage() {
     const { data } = api.exercises.getAll.useQuery();
     const router = useRouter();
+    const ctx = api.useContext();
+
+    const { mutate } = api.exercises.delete.useMutation({
+        onSuccess: () => {
+            void ctx.exercises.getAll.invalidate();
+        },
+        onError: (e) => {
+            const errorMessage = e.data?.zodError?.fieldErrors.content;
+            if (errorMessage && errorMessage[0]) {
+                console.log(errorMessage[0]);
+            } else {
+                console.log("Failed to delete! Please try again later.");
+            }
+        },
+    })
 
     async function handleDelClick(e: MouseEvent, exercise: Exercise) {
         e.stopPropagation();
-        // const response = await exerciseCtx.removeExercise(exercise);;
-        // if (response) {
-        //     console.log(response);
-        // }
+        mutate({ id: exercise.id });
     }
 
     return (
@@ -34,13 +46,13 @@ function ExercisePage() {
                 </div>
             </div>
             <SecondTitle>Exercise List</SecondTitle>
-            <Button onCLick={() => router.push("new")}>New Exercise</Button>
+            <Button onCLick={() => router.push("exercises/new")}>New Exercise</Button>
             {data?.map((exercise) => (
                 <Card key={exercise.id} onClick={() => router.push("" + exercise.id)}>
                     <p className="flex select-none">{exercise.name}</p>
-                    {/* <div onClick={(e) => handleDelClick(e, exercise)} className="flex mr-0 ml-auto pt-1 cursor-pointer">
+                    <div onClick={(e) => handleDelClick(e, exercise)} className="flex mr-0 ml-auto pt-1 cursor-pointer">
                         <Bin />
-                    </div> */}
+                    </div>
                 </Card>
             ))}
         </div>

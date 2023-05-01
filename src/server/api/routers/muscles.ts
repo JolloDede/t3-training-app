@@ -9,6 +9,22 @@ export const musclesRouter = createTRPCRouter({
     return ctx.prisma.muscle.findMany();
   }),
 
+  get: privateProcedure
+  .input(
+    z.object({
+      name: z.string().min(1).max(280),
+    })
+  )
+  .query(async ({ ctx, input}) => {
+    const muscle = await ctx.prisma.muscle.findFirst({
+      where: {
+        name: input.name,
+      }
+    });
+
+    return muscle;
+  }),
+
   create: adminProcedure
     .input(
       z.object({
@@ -31,7 +47,7 @@ export const musclesRouter = createTRPCRouter({
       return muscle;
     }),
 
-    delete: adminProcedure
+  delete: adminProcedure
     .input(
       z.object({
         id: z.string(),

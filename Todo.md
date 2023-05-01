@@ -15,7 +15,9 @@
 
 ### Exercises
 * [ ] delete
-* [ ] add
+* [X] add
+  * [X] with muscle
+  * [X] muscle usage
 
 ## Style
 * [ ] not full with

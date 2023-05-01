@@ -12,23 +12,24 @@ generator client {
 }
 
 model Muscle {
-  id        String               @id @default(cuid())
-  name      String               @unique @db.VarChar(255)
-  exercises MusclesInExercises[]
+  id        String                    @id @default(cuid())
+  name      String                    @unique @db.VarChar(255)
+  exercises MuscleUsagesInExercises[]
 }
 
 model Exercise {
-  id       String                @id @default(cuid())
-  name     String                @db.VarChar(255) @unique
-  muscles  MusclesInExercises[]
+  id       String                    @id @default(cuid())
+  name     String                    @unique @db.VarChar(255)
+  muscles  MuscleUsagesInExercises[]
   workouts ExercisesInWorkouts[]
 }
 
-model MusclesInExercises {
+model MuscleUsagesInExercises {
   muscle     Muscle   @relation(fields: [muscleId], references: [id])
   muscleId   String // relation scalar field (used in the `@relation` attribute above)
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
   exerciseId String // relation scalar field (used in the `@relation` attribute above)
+  usage      Int
 
   @@id([muscleId, exerciseId])
   @@index([muscleId])
@@ -37,7 +38,7 @@ model MusclesInExercises {
 
 model Workout {
   id        String                @id @default(cuid())
-  name      String                @db.VarChar(255) @unique
+  name      String                @unique @db.VarChar(255)
   userId    String
   exercises ExercisesInWorkouts[]
 }
