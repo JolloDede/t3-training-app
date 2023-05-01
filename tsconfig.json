@@ -19,15 +19,16 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
   },
   "include": [
     ".eslintrc.cjs",
     "next-env.d.ts",
+    "custom.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
-    "**/*.mjs"
+    "**/*.mjs",
   ],
   "exclude": ["node_modules"]
 }

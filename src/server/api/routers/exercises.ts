@@ -2,8 +2,8 @@ import { z } from "zod";
 
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 
-export const workoutsRouter = createTRPCRouter({
+export const exercisesRouter = createTRPCRouter({
   getAll: privateProcedure.query(({ ctx }) => {
-    return ctx.prisma.workout.findMany({ where: { userId: ctx.currentUser.id }});
+    return ctx.prisma.exercise.findMany();
   }),
 });

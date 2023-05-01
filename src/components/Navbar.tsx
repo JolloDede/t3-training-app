@@ -1,5 +1,7 @@
-import { SignOutButton, UserButton } from "@clerk/nextjs";
+import { SignOutButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { string } from "zod";
 
 export enum ActivePage {
     Home,
@@ -19,6 +21,18 @@ function Navbar({ activePage }: Props) {
     const profileClassname = activePage == ActivePage.Profile ? tabsClassname + activeTabClassname : tabsClassname;
     const AdminClassname = activePage == ActivePage.Admin ? tabsClassname + activeTabClassname : tabsClassname;
     const socialClassname = activePage == ActivePage.Social ? tabsClassname + activeTabClassname : tabsClassname;
+    const [role, setRole] = useState("");
+    const { isSignedIn, user } = useUser();
+
+    useEffect(() => {
+        if (isSignedIn) {
+            if (user.publicMetadata.role && user.publicMetadata.role == "admin") {
+                setRole(user.publicMetadata.role);
+            }else {
+                setRole("user");
+            }
+        }
+    }, [])
 
     return (
         <nav className='flex py-6'>
@@ -32,7 +46,7 @@ function Navbar({ activePage }: Props) {
                 <Link href={"/social"} className={socialClassname}>
                     Social
                 </Link>
-                {/* {auth?.user.group == Group.Admin ? <Link href={"/admin"} className={AdminClassname} >Admin</Link> : ""} */}
+                {role == "admin" ? <Link href={"/admin"} className={AdminClassname} >Admin</Link> : ""}
             </div>
             <div className='flex self-end'>
                 {/* <SyncButton>Sync</SyncButton> */}

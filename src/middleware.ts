@@ -7,6 +7,8 @@ const publicPaths = ['/login*']
 
 const isPublic = (path: string) => {
   return publicPaths.find(x =>
+    // Todo
+    // regex if there is nothing it is not public or maybe move home to /home and the index file is a description of the app
     path.match(new RegExp(`^${x}$`.replace('*$', '($|/)')))
   )
 }

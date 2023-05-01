@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Navbar, { ActivePage } from "~/components/Navbar";
-import PageTitle from "~/components/PageTitle";
+import { PageTitle } from "~/components/Title";
 import { WorkoutList } from "~/components/Workout";
 
 
