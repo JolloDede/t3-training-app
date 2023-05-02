@@ -21,3 +21,8 @@
 
 ## Style
 * [ ] not full with
+
+# Step 2
+
+## Exercises
+* [ ] only can select muscles that arent used already

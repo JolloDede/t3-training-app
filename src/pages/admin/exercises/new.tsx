@@ -58,7 +58,7 @@ function NewExcercisePage() {
         },
     });
 
-    async function handleSaveClick() {
+    function handleSaveClick() {
         mutate({ name, muscles: muscleUsageList.map(muscleUsage => { return { id: muscleUsage.id, usage: muscleUsage.usage } }) });
     }
 

@@ -24,7 +24,7 @@ function NewMusclePage() {
         },
     })
 
-    async function handleSaveClick() {
+    function handleSaveClick() {
         mutate({ name });
     }
 
