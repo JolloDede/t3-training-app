@@ -1,10 +1,10 @@
-import { MouseEvent, MouseEventHandler, useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import { ExpandIcon } from "./Icon";
 
 interface Props {
     placeholder: string;
     options: DropdownOption[];
-    onChange: Function;
+    onChange: (option: DropdownOption) => void;
 }
 
 export interface DropdownOption {
@@ -19,12 +19,14 @@ function Dropdown({ placeholder, options, onChange }: Props) {
 
     useEffect(() => {
         const handler = (e: any) => {
+            // Todo chang the type of the function
+            // eslint-disable-next-line
             if (inputRef.current && !inputRef.current.contains(e.target)) {
                 setShowMenu(false);
             }
         };
 
-        window.addEventListener("click", handler);
+        window.addEventListener ("click", handler);
 
         return () => {
             window.addEventListener("click", handler);
@@ -66,7 +68,7 @@ function Dropdown({ placeholder, options, onChange }: Props) {
             {showMenu && (
                 <div className="absolute w-full max-h-[150px] translate-y-1 overflow-y-auto border rounded-lg bg-white z-50">
                     {options.map((option) => (
-                        <div key={option.key} onClick={() => itemClickHandle(option)} className={"p-2 hover:bg-blue-300 "+ (isSelected(option) && "bg-blue-500")}>
+                        <div key={option.key} onClick={() => itemClickHandle(option)} className={`p-2 hover:bg-blue-300 ${isSelected(option) ? "bg-blue-500" : ""} `}>
                             {option.value}
                         </div>
                     ))}

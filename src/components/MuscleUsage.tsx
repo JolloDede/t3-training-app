@@ -7,7 +7,7 @@ import { Muscle } from "@prisma/client";
 interface Props {
     muscleUsage: MuscleUsage;
     dropOptions: () => DropdownOption[];
-    update: Function;
+    update: (index: number, newMuscleUsage: MuscleUsage) => void;
     id: number;
     muscles: Muscle[];
 }
@@ -15,17 +15,20 @@ interface Props {
 function MuscleUsageComp({ muscleUsage, dropOptions, update, id, muscles }: Props) {
 
     function handleDropdownChange(option: DropdownOption) {
-        const muscle = muscles?.find(muscle => muscle.name == option.value) 
-        update(id, { id: muscle?.id!, name: muscle?.name!, usage: muscleUsage.usage })
+        const muscle = muscles?.find(muscle => muscle.name == option.value);
+        if (muscle)
+            update(id, { id: muscle.id, name: muscle.name, usage: muscleUsage.usage });
+
+        console.log("error cant handle dropdownchange");
     }
 
-    function handleChange(e: any) {
-        update(id, { id: muscleUsage.id, name: muscleUsage.name, usage: e.target.value })
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        update(id, { id: muscleUsage.id, name: muscleUsage.name, usage: e.target.valueAsNumber })
     }
 
     return (
         <div>
-            <Dropdown placeholder={muscleUsage.name || "Select Muscle..."} onChange={(option: DropdownOption) => handleDropdownChange(option)} options={dropOptions()} />
+            <Dropdown placeholder={muscleUsage.name || "Select Muscle..."} onChange={(option: DropdownOption) => { handleDropdownChange(option) }} options={dropOptions()} />
             <div className="mt-1">
                 <label>Usage Percent: </label><input type="number" value={muscleUsage.usage} onChange={e => handleChange(e)} />
             </div>

@@ -28,7 +28,7 @@ function MusclePage() {
         },
     })
 
-    async function handleDelClick(e: MouseEvent, muscle: Muscle) {
+    function handleDelClick(e: MouseEvent, muscle: Muscle) {
         e.stopPropagation();
         mutate({ id: muscle.id })
     }
@@ -46,11 +46,11 @@ function MusclePage() {
                 </div>
             </div>
             <SecondTitle>Muscle List</SecondTitle>
-            <Button onCLick={() => router.push("muscles/new")}>New Muscle</Button>
+            <Button onCLick={() => void router.push("muscles/new") }>New Muscle</Button>
             {data?.map((muscle) => (
                 <Card key={muscle.id}>
                     <p className="flex select-none">{muscle.name}</p>
-                    <div onClick={(e) => handleDelClick(e, muscle)} className="flex mr-0 ml-auto pt-1 cursor-pointer">
+                    <div onClick={(e) => { handleDelClick(e, muscle) }} className="flex mr-0 ml-auto pt-1 cursor-pointer">
                         <Bin />
                     </div>
                 </Card>

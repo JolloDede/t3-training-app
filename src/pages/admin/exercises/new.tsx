@@ -17,7 +17,7 @@ function NewExcercisePage() {
     const { data } = api.muscles.getAll.useQuery();
 
     function addMusclesComp() {
-        let newMuscleUsage: MuscleUsage = {
+        const newMuscleUsage: MuscleUsage = {
             id: "",
             name: "",
             usage: 50,
@@ -35,11 +35,11 @@ function NewExcercisePage() {
     }
 
     function dropOptions(): DropdownOption[] {
-        let result: DropdownOption[] = [];
+        const result: DropdownOption[] = [];
         if (!data) return result;
-        for (let i = 0; i < data.length; i++) {
-            result.push({ key: data[i]?.id!, value: data[i]?.name! })
-        }
+        data.forEach(muscle => {
+            result.push({ key: muscle.id, value: muscle.name })
+        });
         return result;
     }
 
