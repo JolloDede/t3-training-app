@@ -14,7 +14,7 @@
 * [X] add
 
 ### Exercises
-* [ ] delete
+* [X] delete
 * [X] add
   * [X] with muscle
   * [X] muscle usage

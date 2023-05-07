@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { string, z } from "zod";
 
 import { adminProcedure, createTRPCRouter, privateProcedure } from "~/server/api/trpc";
@@ -33,8 +34,6 @@ export const exercisesRouter = createTRPCRouter({
       // const { success } = await ratelimit.limit(authorId);
       // if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      console.log("hallo")
-
       const exercise = await ctx.prisma.exercise.create({
         data: {
           name: input.name,
@@ -64,6 +63,20 @@ export const exercisesRouter = createTRPCRouter({
       // Todo add ratelimit
       // const { success } = await ratelimit.limit(authorId);
       // if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
+      const exerciseInWorkout = await ctx.prisma.exercisesInWorkouts.findFirst({
+        where: {
+          exerciseId: input.id,
+        }
+      });
+      if (exerciseInWorkout) throw new TRPCError({ code: "CONFLICT", message: "Exercise exists in Workout cant delete" })
+
+      // must do that before deleting the exercise
+      const deletRelation = await ctx.prisma.muscleUsagesInExercises.deleteMany({
+        where: {
+          exerciseId: input.id,
+        }
+      });
 
       const exercise = await ctx.prisma.exercise.delete({
         where: {
