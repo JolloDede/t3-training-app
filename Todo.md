@@ -2,8 +2,10 @@
 ## Home
 
 ## Profile
-* [ ] add workout
-* [ ] remove workout
+* [X] List workouts
+* [X] add workout
+* [X] delete workout
+* [X] delete exercise from workout
 
 ## Social
 
