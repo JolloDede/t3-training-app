@@ -42,7 +42,7 @@ function WorkoutForm({ workout, exitWorkoutView }: Props) {
     }
 
     function dropOptions(): DropdownOption[] {
-        let result: DropdownOption[] = [];
+        const result: DropdownOption[] = [];
         if (!data) return result;
         for (let i = 0; i < data.length; i++) {
             result.push({ key: data[i]!.id, value: data[i]!.name })
@@ -104,7 +104,7 @@ function WorkoutForm({ workout, exitWorkoutView }: Props) {
             <button onClick={addExercise} className="p-1 w-8 h-8 border rounded-lg">+</button>
             {exerciseRepsList.map((exerciseReps, index) => (
                 <Card key={index}>
-                    <Dropdown placeholder={data?.find(exercise => exercise.id == exerciseReps.exerciseId)?.name!} options={dropOptions()} onChange={(option: DropdownOption) => handleDropdownChange(index, option, exerciseReps.repetitions)} />
+                    <Dropdown placeholder={data?.find(exercise => exercise.id == exerciseReps.exerciseId)?.name || "Error"} options={dropOptions()} onChange={(option: DropdownOption) => handleDropdownChange(index, option, exerciseReps.repetitions)} />
                     <div className="flex justify-center m-auto font-semibold">
                         <label htmlFor="rep" className="pr-1">Repetitions:</label>
                         <input id="rep" type="number" value={exerciseReps.repetitions} onChange={e => handleEditExercise(index, { exerciseId: exerciseReps.exerciseId, repetitions: parseInt(e.target.value) })} />

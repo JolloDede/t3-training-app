@@ -16,7 +16,7 @@ export function WorkoutList() {
     return (
         <div>
             {data?.map((workout) => (
-                <WorkoutCardSets workout={workout} />
+                <WorkoutCardSets key={workout.id} workout={workout} />
             ))}
         </div>
     );
@@ -68,7 +68,7 @@ function WorkoutCard({ id }: CardProps) {
         },
     })
 
-    async function handleDelClick(e: MouseEvent, workout: Workout) {
+    function handleDelClick(e: MouseEvent, workout: Workout) {
         e.stopPropagation();
         if (!data) return;
         mutate({ id: data.id });
@@ -86,17 +86,17 @@ function WorkoutCard({ id }: CardProps) {
                 <div onClick={handleExpandClick}><ExpandIcon classname={!displayExercises ? "-rotate-90" : ""} /></div>
                 <p className="flex">{data.name}</p>
                 <div className="flex ml-auto">
-                    <div onClick={() => router.push("profile/"+data.id)} className="cursor-pointer">
+                    <div onClick={() => { void router.push("profile/" + data.id) }} className="cursor-pointer">
                         <EditPen />
                     </div>
-                    <div onClick={(e) => handleDelClick(e, data)} className="cursor-pointer">
+                    <div onClick={(e) => { handleDelClick(e, data) }} className="cursor-pointer">
                         <Bin />
                     </div>
                 </div>
             </div>
             <div className={displayExercises ? "flex flex-col ml-8" : "hidden"}>
                 {data.exercises.map((exerciseRep, index) => (
-                    <ExerciseRep key={data.id + index} exerciseRep={exerciseRep} />
+                    <ExerciseRep key={data.id + index.toString()} exerciseRep={exerciseRep} />
                 ))}
             </div>
         </Card>
