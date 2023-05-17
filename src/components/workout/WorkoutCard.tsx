@@ -21,7 +21,7 @@ export function WorkoutCard({ workout }: SetProps) {
             </div>
             <div className={displayExercises ? "flex flex-col ml-8" : "hidden"}>
                 {data?.map((exerciseRep, index) => (
-                    <ExerciseRepSet key={workout.id+index} exerciseRep={exerciseRep} />
+                    <ExerciseRepSet key={workout.id+index.toString()} exerciseRep={exerciseRep} />
                 ))}
             </div>
         </Card>
