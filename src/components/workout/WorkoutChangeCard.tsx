@@ -1,54 +1,18 @@
-import { MouseEvent, useState } from "react";
-import Card from "./Card";
-import { api } from "~/utils/api";
-import { ExpandIcon } from "./Icon";
 import { Workout } from "@prisma/client";
-import Bin from "./Bin";
-import Button, { RedButton } from "./Button";
-import Dropdown, { DropdownOption } from "./Dropdown";
-import EditPen from "./EditPen";
 import { useRouter } from "next/router";
-import ExerciseRep from "./Exercise";
-
-export function WorkoutList() {
-    const { data } = api.workouts.getAll.useQuery();
-
-    return (
-        <div>
-            {data?.map((workout) => (
-                <WorkoutCardSets key={workout.id} workout={workout} />
-            ))}
-        </div>
-    );
-}
-
-interface SetProps {
-    workout: Workout;
-}
-
-export function WorkoutCardSets({ workout }: SetProps) {
-    const [displayExercises, setDisplayExercises] = useState(false);
-
-    return (
-        <Card classname="flex-col border rounded-lg p-4">
-            <div className="flex flex-row">
-                <div onClick={() => setDisplayExercises(!displayExercises)}><ExpandIcon classname={!displayExercises ? "-rotate-90" : ""} /></div>
-                <p className="flex">{workout.name}</p>
-            </div>
-            <div className={displayExercises ? "flex flex-col ml-8" : "hidden"}>
-                {/* {workout.exercises.map((exerciseRep, index) => (
-                    <ExerciseRepSet key={workout._id+index} exerciseRep={exerciseRep} />
-                ))} */}
-            </div>
-        </Card>
-    );
-}
+import { MouseEvent, useState } from "react";
+import { api } from "~/utils/api";
+import Bin from "../Bin";
+import Card from "../Card";
+import EditPen from "../EditPen";
+import ExerciseRep from "../Exercise";
+import { ExpandIcon } from "../Icon";
 
 interface CardProps {
     id: string;
 }
 
-function WorkoutCard({ id }: CardProps) {
+function WorkoutChangeCard({ id }: CardProps) {
     const [displayExercises, setdisplayExercises] = useState(false);
     const router = useRouter();
     const { data } = api.workouts.getWholeWorkout.useQuery({ id });
@@ -103,4 +67,4 @@ function WorkoutCard({ id }: CardProps) {
     );
 }
 
-export default WorkoutCard;
+export default WorkoutChangeCard;

@@ -3,8 +3,8 @@ import { useState } from "react";
 import Button from "~/components/Button";
 import Navbar, { ActivePage } from "~/components/Navbar";
 import { PageTitle } from "~/components/Title";
-import WorkoutCard from "~/components/Workout";
-import WorkoutForm from "~/components/WorkoutForm";
+import WorkoutChangeCard from "~/components/workout/WorkoutChangeCard";
+import WorkoutForm from "~/components/workout/WorkoutForm";
 import { api } from "~/utils/api";
 
 function ProfilePage() {
@@ -36,7 +36,7 @@ function ProfilePage() {
                             <Button className='justify-center mx-auto' onCLick={handleNewExerciseCLick}>New Workout</Button>
                         </div>
                         {data?.map(workout => (
-                            <WorkoutCard key={workout.id} id={workout.id} />
+                            <WorkoutChangeCard key={workout.id} id={workout.id} />
                         ))}
                     </div>
                 }

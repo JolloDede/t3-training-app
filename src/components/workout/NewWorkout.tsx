@@ -1,25 +1,41 @@
-import { Exercise, ExercisesInWorkouts, Workout } from "@prisma/client";
 import { MouseEvent, useState } from "react";
-import { ExerciseReps } from "~/server/api/routers/workouts";
-import Bin from "./Bin";
-import Button, { RedButton } from "./Button";
-import Card from "./Card";
-import Dropdown, { DropdownOption } from "./Dropdown";
+import Bin from "../Bin";
+import Button, { RedButton } from "../Button";
+import Card from "../Card";
+import Dropdown, { DropdownOption } from "../Dropdown";
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
+import { ExerciseReps } from "~/server/api/routers/workouts";
 
 interface Props {
-    workout?: Workout & { exercises: (ExercisesInWorkouts)[] };
-    exitWorkoutView: () => void;
+    exitNewWorkoutView: () => void;
 }
 
-function WorkoutForm({ workout, exitWorkoutView }: Props) {
+export function NewWorkout({ exitNewWorkoutView }: Props) {
     const [errorMsg, setErrorMsg] = useState("");
-    const [name, setName] = useState(workout ? workout.name : "");
-    const [exerciseRepsList, setExerciseRepsList] = useState<ExerciseReps[]>(workout ? 
-        workout.exercises.map((exercise) => { return { exerciseId: exercise.exerciseId, repetitions: exercise.repetitions }}) :
-        []);
+    const [name, setName] = useState("");
+    const [exerciseRepsList, setExerciseRepsList] = useState<ExerciseReps[]>([]);
     const { data } = api.exercises.getAll.useQuery();
     const ctx = api.useContext();
+
+    const { mutate } = api.workouts.create.useMutation({
+        onSuccess: () => {
+            void ctx.muscles.getAll.invalidate();
+            exitNewWorkoutView();
+        },
+        onError: (e) => {
+            const errorMessage = e.data?.zodError?.fieldErrors.content;
+            if (errorMessage && errorMessage[0]) {
+                setErrorMsg(errorMessage[0]);
+            } else {
+                setErrorMsg("Failed to post! Please try again later.");
+            }
+        },
+    })
+
+    function handleSaveClick() {
+        mutate({ name, exerciseReps: exerciseRepsList });
+    }
 
     function addExercise() {
         if (data && data.length == 1) {
@@ -56,44 +72,6 @@ function WorkoutForm({ workout, exitWorkoutView }: Props) {
         handleEditExercise(id, { exerciseId: option.key, repetitions: repetitions });
     }
 
-    const { mutate: mutateCreate } = api.workouts.create.useMutation({
-        onSuccess: () => {
-            void ctx.workouts.getAll.invalidate();
-            exitWorkoutView();
-        },
-        onError: (e) => {
-            const errorMessage = e.data?.zodError?.fieldErrors.content;
-            if (errorMessage && errorMessage[0]) {
-                setErrorMsg(errorMessage[0]);
-            } else {
-                setErrorMsg("Failed to post! Please try again later.");
-            }
-        },
-    });
-
-    const { mutate: mutateUpdate } = api.workouts.update.useMutation({
-        onSuccess: () => {
-            void ctx.muscles.getAll.invalidate();
-            exitWorkoutView();
-        },
-        onError: (e) => {
-            const errorMessage = e.data?.zodError?.fieldErrors.content;
-            if (errorMessage && errorMessage[0]) {
-                setErrorMsg(errorMessage[0]);
-            } else {
-                setErrorMsg("Failed to post! Please try again later.");
-            }
-        },
-    })
-
-    function handleSaveClick() {
-        if (workout) {
-            mutateUpdate({ id: workout.id, name, exerciseReps: exerciseRepsList });
-        } else {
-            mutateCreate({ name, exerciseReps: exerciseRepsList });
-        }
-    }
-
     return (
         <form onSubmit={(e) => e.preventDefault()}>
             <p className="flex text-red-600">{errorMsg}</p>
@@ -116,10 +94,8 @@ function WorkoutForm({ workout, exitWorkoutView }: Props) {
             ))}
             <div className="mt-4">
                 <Button onCLick={handleSaveClick}>Save</Button>
-                <RedButton onCLick={() => exitWorkoutView()}>Cancle</RedButton>
+                <RedButton onCLick={() => exitNewWorkoutView()}>Cancle</RedButton>
             </div>
         </form>
     );
 }
-
-export default WorkoutForm;

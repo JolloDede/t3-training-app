@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import WorkoutForm from "~/components/WorkoutForm";
+import WorkoutForm from "~/components/workout/WorkoutForm";
 import { api } from "~/utils/api";
 
 function ProfileWorkoutIdPage() {
