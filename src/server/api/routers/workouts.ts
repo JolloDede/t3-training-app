@@ -14,7 +14,11 @@ export interface ExerciseReps {
 
 export const workoutsRouter = createTRPCRouter({
   getAll: privateProcedure.query(({ ctx }) => {
-    return ctx.prisma.workout.findMany({ where: { userId: ctx.currentUser.id } });
+    return ctx.prisma.workout.findMany({
+      where: {
+        userId: ctx.currentUser.id
+      },
+    });
   }),
 
   get: privateProcedure

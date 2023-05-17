@@ -20,6 +20,25 @@ export const exercisesRouter = createTRPCRouter({
     return ctx.prisma.exercise.findMany();
   }),
 
+  getConToWorkout: privateProcedure
+    .input(
+      z.object({
+        workoutId: z.string()
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const exercises = await ctx.prisma.exercisesInWorkouts.findMany({
+        where: {
+          workoutId: input.workoutId,
+        },
+        include: {
+          exercise: true,
+        }
+      });
+
+      return exercises;
+    }),
+
   create: adminProcedure
     .input(
       z.object({

@@ -1,5 +1,6 @@
 # Step 1
 ## Home
+* [X] display workouts
 
 ## Profile
 * [X] List workouts
